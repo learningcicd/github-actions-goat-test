@@ -55,11 +55,12 @@ Use `step-security/harden-runner@v2` in your workflow and then Run the workflow.
     egress-policy: audit
 ```
 
-After the workflow completes, check out the build logs. In the Harden-Runner step, you will see a link to security insights and recommendations.
+After the workflow completes, check out the build logs. In the Harden-Runner step, you will see a link to security insights and recommendations. When you open the link you will see dashboard like this. Here you can figure out all the outbound network calls and check if any of the domain looks suspicious. 
+<img width="1063" alt="Screenshot 2023-12-10 at 3 44 08 PM" src="https://github.com/learningcicd/github-actions-goat-test/assets/76629897/5b689ee6-6e0a-498d-b517-2ab9695a6853">
 
 ## Steps to Mitigate the Vulnerability:
 ### Block calls to domains 
-Analyze the output of the Harden-Runner step, it will give you insight from where the calls to unwanted domains are happening. You can either choose to replace such code or you can choose to block calls to all domains except the allowed domains which you configure. You can do this configuration by changing the `step-security/harden-runner@v2` step as follow
+Analyze the output of the Harden-Runner step, it will give you insight of which outbound calls are happening and in which step this calls are being made. You can either choose to replace such code for those steps or you can choose to block calls to all domains except the allowed domains which you configure. You can do allowed domains configuration by changing the `step-security/harden-runner@v2` step as follow
 ```
 - name: Harden Runner
   uses: step-security/harden-runner@v2
