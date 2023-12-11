@@ -1,7 +1,7 @@
 # Audit and Rotate GitHub Actions Secrets
 
 ## Introduction
-In this section we will just talk about how to figure out from how many days the secret is not rotated.
+In this section we will see how to figure out from how many days the secret is not rotated.
 
 ## Example Action:
 Description: An example GitHub Actions workflow that has `step-security/harden-runner@v2` step.
