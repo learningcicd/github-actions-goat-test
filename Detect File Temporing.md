@@ -85,5 +85,12 @@ After the workflow completes, check out the build logs. In the Harden-Runner ste
 
 <img width="1651" alt="Screenshot 2023-12-11 at 8 19 40 PM" src="https://github.com/learningcicd/github-actions-goat-test/assets/76629897/ed3120fb-c7c2-46c7-8e06-0293d44f49a5">
 
+## Steps to Mitigate the Vulnerability:
+
+# Block calls to domains
+Analyze the output of the Harden-Runner step, it will give you insight of which files are getting overwritten and in which step this file tempering is happening. You can replace the code to remove such action.
+
+
+
 
 
