@@ -1,5 +1,8 @@
 # Filter Network Traffic
 
+## Introduction
+In this section we will see how to get insight about the outbound network calls and how to fix them / block them
+
 ## Example Action: 
 Description:
 An example GitHub Actions workflow that allows unrestricted outbound network access, potentially exposing source code and CI/CD credentials.
