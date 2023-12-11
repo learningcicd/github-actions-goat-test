@@ -3,7 +3,7 @@
 ## Introduction
 In this section we will see how to figure out all actions which are being used across organization.
 
-## Example Action:
+## Integration:
 Integrate with [StepSecurity Actions Security GitHub App](https://github.com/apps/stepsecurity-actions-security)
 
 ## Steps to Identify the Secrets age:
