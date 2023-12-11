@@ -3,25 +3,8 @@
 ## Introduction
 In this section we will see how to figure out from how many days the secret is not rotated.
 
-## Example Action:
-Description: An example GitHub Actions workflow that has `step-security/harden-runner@v2` step.
-
-```
-name: "Hosted: Network Monitoring with Harden-Runner"
-on:
-  workflow_dispatch:
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: step-security/harden-runner@v2
-        with:
-          egress-policy: audit
-      - uses: actions/checkout@v3
-      ... other steps
-```
-
+## Integration:
+Integrate with [StepSecurity Actions Security GitHub App](https://github.com/apps/stepsecurity-actions-security)
 
 ## Steps to Identify the Secrets age:
 
