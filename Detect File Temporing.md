@@ -87,7 +87,7 @@ After the workflow completes, check out the build logs. In the Harden-Runner ste
 
 ## Steps to Mitigate the Vulnerability:
 
-# Block calls to domains
+### Identify and remove the code
 Analyze the output of the Harden-Runner step, it will give you insight of which files are getting overwritten and in which step the file tempering is happening. You can replace the code fix the issue.
 
 
