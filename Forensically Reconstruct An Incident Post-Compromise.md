@@ -1,7 +1,7 @@
 # Forensically Reconstruct An Incident Post-Compromise
 
 ## Introduction
-In this type of vulnerability, an actor with `write` permission can exfiltration of sensitive information and once the workflow runs they delete it to remove the evidance.
+In this section, we will find out how an actor with `write` permission can exfiltration of sensitive information and deletes the run later to remove the evidance.
 
 ## Example Action:
 Description: An example GitHub Actions workflow that does upload sensitive information like GITHUB_TOKEN to attacker.com.
