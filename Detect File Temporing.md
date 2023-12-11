@@ -1,5 +1,8 @@
 # Detect File Tampering
 
+## Introduction
+In this section we will see how to find out file tempering by any steps / github composite actions.
+
 ## Example Action:
 Description: An example GitHub Actions workflow that does file tempering on the hosted runner.
 
