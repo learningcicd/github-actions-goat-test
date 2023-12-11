@@ -73,7 +73,7 @@ When `step-security/harden-runner@v2` is added in the workflow you can open the 
 
 ## Steps to Mitigate the Vulnerability:
 
-# Remove permissions from user and rotate the leaked secrets
+### Remove permissions from user and rotate the leaked secrets
 Once you have identified the actor who had done exfiltration of sensitive information you can remove their `write` permission and rotate all the secrets which were leaked.
 
 
