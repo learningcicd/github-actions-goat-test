@@ -81,6 +81,9 @@ Use step-security/harden-runner@v2 in your workflow and then Run the workflow.
 - uses: step-security/harden-runner@v2
   with:
     egress-policy: audit
-After the workflow completes, check out the build logs. In the Harden-Runner step, you will see a link to security insights and recommendations. When you open the link you will see dashboard like this. Here you can figure out all the outbound network calls and check if any of the domain looks suspicious (in below example attacker.com).
+After the workflow completes, check out the build logs. In the Harden-Runner step, you will see a link to security insights and recommendations. When you open the link you will see dashboard like this. Here you can figure out all files which are getting overwritten. In the example below index.js
+
+<img width="1651" alt="Screenshot 2023-12-11 at 8 19 40 PM" src="https://github.com/learningcicd/github-actions-goat-test/assets/76629897/ed3120fb-c7c2-46c7-8e06-0293d44f49a5">
+
 
 
