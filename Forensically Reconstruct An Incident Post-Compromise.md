@@ -67,7 +67,7 @@ https
 
 ## Steps to Identify the Vulnerability:
 
-### Review File Tempering:
+### Review exfiltrated secrets:
 When `step-security/harden-runner@v2` is added in the workflow you can open the `StepSecurity Dashboard` and click on the `Runtime Security` tab. You should see a record for the workflow run and can click on it to view the outbound calls made during the run, and what process made the call. This is important forensic information that can help confirm the incident, and identify the step and the process that exfiltrated secrets. It can also be used to understand who ran the workflow to identify whose credentials have been compromised.
 
 
